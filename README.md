@@ -12,7 +12,7 @@ SpyOffSec é um programa destinado ao controle e visualização remota de máqui
 
 <ul>
   <li> 1. Instale o pyinstaller : <b>$ pip install pyinstaller</b></li>
-  <li> 2. Execute o comando : <b>$ pyinstaller --onfile cliente.py --noconsole</b></li>
+  <li> 2. Execute o comando : <b>$ pyinstaller --onefile cliente.py --noconsole</b></li>
   <li> 3. Serão criadas 2 pastas (<b>build/</b>, <b>dist/</b>) e o arquivo <b>cliente.spec</b></li>
   <li> 4. O executável está na pasta <b>dist/</b> o resto é descartável</li>
   <li> 5. Abra a pasta <b>dist/</b> e pronto somente executá-lo</li>
