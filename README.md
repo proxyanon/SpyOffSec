@@ -3,6 +3,6 @@ SpyOffSec é um programa destinado ao controle e visualização remota de máqui
 
 # Como usar ?
 <ul>
-  <li> 1. O <b>cliente.py</b> é a backdoor, o script que vai na máquina que vai ser visualizada/controlada
-  <li> 2. O <b>servidor.py</li> é o handler, o script que vai na máquina que vai visualizar/controlar
+  <li> 1. O <b>cliente.py</b> é a backdoor, o script que vai na máquina que vai ser visualizada/controlada</li>
+  <li> 2. O <b>servidor.py</b> é o handler, o script que vai na máquina que vai visualizar/controlar</li>
 </ul>
