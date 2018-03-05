@@ -18,6 +18,9 @@ from zlib import compress
 from os import path
 from sys import exit
 
+ip = '192.168.0.104' # Coloque o seu IP
+port = 8291 # Coloque sua porta
+
 class App():
 
 	def __init__(self, ip, port, image_name=path.expanduser("~\\AppData\\Local\\Temp\\stream.jpg")):
@@ -62,7 +65,7 @@ class App():
 		else: # Se nao
 			s.sendto("FAIL", addr) # Envia um FAIL
 
-app = App('192.168.0.104', 8291) # Cria a classe App com o endereco do servidor
+app = App(ip, port) # Cria a classe App com o endereco do servidor
 
 while True: # Enquanto estiver tudo certo
 	app.sendImage() # Fica enviando os frames
