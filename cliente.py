@@ -14,14 +14,18 @@
 
 import socket
 from PIL import ImageGrab, Image
+from ctypes import windll
 from zlib import compress
 from os import path
 from sys import exit
 
-ip = '192.168.0.104' # Coloque o seu IP
+ip = '192.168.0.103' # Coloque o seu IP
 port = 8291 # Coloque sua porta
 
 class App():
+
+	screen_width = windll.user32.GetSystemMetrics(0) # largura da resolucao ex: 1360
+	screen_height = windll.user32.GetSystemMetrics(1) # altura da resolucao ex: 760
 
 	def __init__(self, ip, port, image_name=path.expanduser("~\\AppData\\Local\\Temp\\stream.jpg")):
 		self.ip = ip # IP do servidor
@@ -29,7 +33,7 @@ class App():
 		self.image_name = image_name # Path e nome da imagem que vai ser salva como frame
 
 	def getImage(self): # Essa funcao que vai ficar gerando os frames
-		image = ImageGrab.grab(bbox=(0, 0, 1360, 768)) # Tira um print do tamanho do display no caso 1360x768
+		image = ImageGrab.grab(bbox=(0, 0, self.screen_width, self.screen_height)) # Tira um print do tamanho do display no caso 1360x768
 		resize = image.resize((800, 500), Image.ANTIALIAS) # Faz o resize para 800x600 para facilitar a transmissao no socket
 		resize.save(self.image_name, 'JPEG', quality=60, optimize=False, progressive=False) # Salva e dimnui consideralvelmente a qualidade do frame (NESCESSARIO)
 		resize.close() # Fecha o frame
@@ -44,7 +48,7 @@ class App():
 
 	def compressString(self): # Essa funcao faz a compressao do frame
 		compressed = compress(compress(self.imageToString(), 9)) # Comprimi o frame 2x
-		#print(len(self.imageToString()), len(compressed)) # Auto-explicativo
+		#print("Bytes recebidos: {recv} bytes - {compressed} bytes compressed".format(recv=len(self.imageToString()), compressed=len(compressed))) # Auto-explicativo
 
 		return compressed # Retorna o frame comprimido
 
