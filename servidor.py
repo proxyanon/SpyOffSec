@@ -14,7 +14,7 @@
 
 import cv2, socket
 from zlib import decompress
-from sys import exit
+from sys import exit, stdout
 
 class App():
 
@@ -43,6 +43,8 @@ class App():
 				data_, addr_ = s.recvfrom(packet_size) # Recebe o frame
 				string_image = data_ # Frame
 
+				stdout.write("\rTrasmitindo ....: {nbytes} bytes".format(nbytes=len(data_)))
+
 				if string_image == "FAIL": break # Se receber um FAIL sai do loop
 			else: # Se nao for o tamanho
 				s.sendto("FAIL", addr) # Envia um FAIL e sai do loop
@@ -50,7 +52,7 @@ class App():
 
 			self.decompressStringAndSave(string_image) # Extrai e salva o frame em um imagem
 			image = cv2.imread(self.image_name, 0) # Ler o frame com o opencv
-			cv2.imshow('Stream', image) # Mostra o frame
+			cv2.imshow('SpyOffSec Stream - por Daniel Victor Freire Feitosa', image) # Mostra o frame
 
 			key = cv2.waitKey(113) # Espeara a entrada da tecla q
 			if key == 113: # Se for entrada a q
@@ -60,7 +62,21 @@ class App():
 		cv2.destroyAllWindows() # Destroi as janelas do opencv
 		exit() # Sai do programa
 
-app = App('0.0.0.0', 8291) # Cria a classe App com as configuracoes do servidor
 
-while True: # Enquanto estiver tudo certo
-	app.run() # Vai receber e mostrar os frames
+# banner
+print(" ______     ______   __  __     ______     ______   ______   ______     ______     ______    ")
+print("/\\ \\ ___\\   /\\  == \\ /\\ \\_\\ \\   /\\  __ \\   /\\  ___\\ /\\  ___\\ /\\  ___\\   /\\  ___\\   /\\  ___\\   ")
+print("\\ \\___  \\  \\ \\  _-/ \\ \\____ \\  \\ \\ \\/\\ \\  \\ \\  __\\ \\ \\  __\\ \\ \\___  \\  \\ \\  __\\   \\ \\ \\____ ") 
+print(" \\/\\_____\\  \\ \\_\\    \\/\\_____\\  \\ \\_____\\  \\ \\_\\    \\ \\_\\    \\/\\_____\\  \\ \\_____\\  \\ \\_____\\") 
+print("  \\/_____/   \\/_/     \\/_____/   \\/_____/   \\/_/     \\/_/     \\/_____/   \\/_____/   \\/_____/ \n")
+                                                                                             
+
+app = App('0.0.0.0', 8291) # Cria a classe App com as configuracoes do servidor
+print("Escutando: tcp://{ip}:{port}\n".format(ip=app.ip, port=app.port)) # auto-explicativo
+
+try:
+	while True: # Enquanto estiver tudo certo
+		app.run() # Vai receber e mostrar os frames
+except KeyboardInterrupt:
+	print("\nEncerrando transmissao ...")
+	exit()
