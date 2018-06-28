@@ -13,13 +13,19 @@
 '''
 
 import socket
-from PIL import ImageGrab, Image
-from ctypes import windll
 from zlib import compress
 from os import path
 from sys import exit
+from platform import system
 
-ip = '192.168.0.103' # Coloque o seu IP
+try:
+	from PIL import ImageGrab, Image
+	from ctypes import windll
+except ImportError:
+	print("\n[#] Desculpe somente Rwindows ...\n")
+	exit()
+
+ip = '192.168.1.62' # Coloque o seu IP
 port = 8291 # Coloque sua porta
 
 class App():

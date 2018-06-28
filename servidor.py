@@ -2,7 +2,7 @@
 
 '''
 	@Author: Daniel Victor Freire Feitosa
-	@Version: 1.0.0
+	@Version: 1.1.0
 
 	Github: https://github.com/proxyanon/
 	Twiiter: @DanielFreire00
@@ -15,6 +15,7 @@
 import cv2, socket
 from zlib import decompress
 from sys import exit, stdout
+from platform import system
 
 class App():
 
@@ -52,7 +53,7 @@ class App():
 
 			self.decompressStringAndSave(string_image) # Extrai e salva o frame em um imagem
 			image = cv2.imread(self.image_name, 0) # Ler o frame com o opencv
-			cv2.imshow('SpyOffSec Stream - por Daniel Victor Freire Feitosa', image) # Mostra o frame
+			cv2.imshow('SpyOffSec UDP - por Daniel Victor Freire Feitosa', image) # Mostra o frame
 
 			key = cv2.waitKey(113) # Espeara a entrada da tecla q
 			if key == 113: # Se for entrada a q
@@ -71,12 +72,15 @@ print(" \\/\\_____\\  \\ \\_\\    \\/\\_____\\  \\ \\_____\\  \\ \\_\\    \\ \\_
 print("  \\/_____/   \\/_/     \\/_____/   \\/_____/   \\/_/     \\/_/     \\/_____/   \\/_____/   \\/_____/ \n")
                                                                                              
 
-app = App('0.0.0.0', 8291) # Cria a classe App com as configuracoes do servidor
-print("Escutando: tcp://{ip}:{port}\n".format(ip=app.ip, port=app.port)) # auto-explicativo
+if system() != 'Windows':
+	print("[#] Provalvemente este programa nao vai rodar perfeitamente no {plataforma} ...\n".format(plataforma=system()))
+
+app = App('192.168.1.62', 8291) # Cria a classe App com as configuracoes do servidor
+print("Escutando: udp://{ip}:{port}\n".format(ip=app.ip, port=app.port)) # auto-explicativo
 
 try:
 	while True: # Enquanto estiver tudo certo
 		app.run() # Vai receber e mostrar os frames
 except KeyboardInterrupt:
-	print("\nEncerrando transmissao ...")
+	print("\nEncerrando transmissao ...\n")
 	exit()
