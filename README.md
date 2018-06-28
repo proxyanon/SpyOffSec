@@ -1,14 +1,14 @@
 # SpyOffSec
 SpyOffSec é um programa destinado ao controle e visualização remota de máquinas, com foco em segurança da informação. 
 
-# Como usar ? (isso server para o TCP e UDP)
+# Como usar ? <span>(isso server para o TCP e UDP)</span>
 <ul>
   <li> 1. No arquivo <b>cliente.py</b> altere as variaveis <b><font color="red">ip</font></b> e <b><font color="red">port</font></b> para o que você vai ultilizar</li> 
   <li> 2. O <b>cliente.py</b> é a backdoor, o script que vai na máquina que vai ser visualizada/controlada</li>
   <li> 2. O <b>servidor.py</b> é o handler, o script que vai na máquina que vai visualizar/controlar</li>
 </ul>
 
-# Gerando um executável (isso server para o TCP e UDP)
+# Gerando um executável <span>(isso server para o TCP e UDP)</span>
 
 <ul>
   <li> 1. Instale o pyinstaller : <b>$ pip install pyinstaller</b></li>
