@@ -18,7 +18,7 @@ SpyOffSec é um programa destinado ao controle e visualização remota de máqui
   <li> 5. Abra a pasta <b>dist/</b> e pronto somente executá-lo</li>
 </ul>
 
-# TCP ...
+# TCP
 O TCP é multi-plataformas, pode ser utilizado junto com <b>ngrok</b> ou outros proxy's TCP, porém podem ocorrer conflitos com portas ou tamanhos dos pacotes ...
 
 # UDP 
